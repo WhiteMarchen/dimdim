@@ -6,17 +6,31 @@ app = FastAPI()
 
 class Item(BaseModel):
     name : str
-    price : float
-    is_offer : Union[bool, None] = None
+    born : int
+    age : int
 
-@app.get("/")
-def read_root():
-    return {"Hello" : "World"}
+item_data = Item(name = " ", born = 0, age = 0)
 
-@app.get("/items/{item_id}")
-def read_item(item_id : int, q : Union[str, None] = None):
-    return {"item_id" : item_id, "q" : q}
+@app.post("/items/")
+def create_item(name : str, born : int):
+    global item_data
+    item_data.name = name
+    item_data.born = born
+    return item_data
 
-@app.post("/items/{item_id}")
-def read_item(item_id : int, item : Item):
-    return {"item_name" : item.name, "item_id" : item_id, "item_price" : item.price}
+@app.get("/item/")
+def read_item():
+    global item_data
+    return item_data
+
+@app.put("/item/")
+def update_item(age : int):
+    global item_data
+    item_data.age = age
+    return item_data
+
+@app.delete("/item/")
+def delete_item():
+    global item_data
+    del item_data.born, item_data.age
+    return item_data
