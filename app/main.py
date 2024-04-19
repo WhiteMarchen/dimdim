@@ -1,36 +1,16 @@
-from typing import Union
 from fastapi import FastAPI
-from pydantic import BaseModel
+import requests
 
 app = FastAPI()
 
-class Item(BaseModel):
-    name : str
-    born : int
-    age : int
+@app.get("/")
 
-item_data = Item(name = " ", born = 0, age = 0)
+def root():
+    URL = "https://bigdata.kepco.co.kr/openapi/v1/change/custNum/industryType.do?year=2020&month=11&metroCd=11&apiKey=0CB11KB41AcMhjdEFnMr022xxsApomXZd3qD9m92&returnType=json"    
+    contents = requests.get(URL).text
 
-@app.post("/items/")
-def create_item(name : str, born : int):
-    global item_data
-    item_data.name = name
-    item_data.born = born
-    return item_data
+    return { "message": contents}
 
-@app.get("/item/")
-def read_item():
-    global item_data
-    return item_data
-
-@app.put("/item/")
-def update_item(age : int):
-    global item_data
-    item_data.age = age
-    return item_data
-
-@app.delete("/item/")
-def delete_item():
-    global item_data
-    del item_data.born, item_data.age
-    return item_data
+@app.get("/home")
+def home():
+    return { "message": "Home!" }
